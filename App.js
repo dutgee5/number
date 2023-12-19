@@ -14,7 +14,7 @@ export default function App() {
 
   let screen = <StartGameScreen onConfirmNumber={startGameHandler} />;
 
-  if (userNumber) screen = <GameScreen />;
+  if (userNumber) screen = <GameScreen userNumber={userNumber} />;
   return (
     <LinearGradient colors={[Colors.primary700, Colors.accent500]} style={styles.rootScreen}>
       <ImageBackground

@@ -1,25 +1,66 @@
-import { View, StyleSheet, Text, SafeAreaView } from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, Alert } from "react-native";
 import Title from "../components/ui/Title";
 import { useState } from "react";
 import NumberContainer from "../components/game/NumberContainer";
+import PrimaryButton from "../components/ui/PrimaryButton";
 
-function GameScreen({userNumber}) {
-  function generateRandomBetween(min, max, exclude) {
-    const rndNum = Math.floor(Math.random() * (max - min)) + min;
+function generateRandomBetween(min, max, exclude) {
+  const rndNum = Math.floor(Math.random() * (max - min)) + min;
 
-    if (rndNum === exclude) {
-      return generateRandomBetween(min, max, exclude);
-    } else {
-      return rndNum;
-    }
+  if (rndNum === exclude) {
+    return generateRandomBetween(min, max, exclude);
+  } else {
+    return rndNum;
   }
-  const initialGuess=generateRandomBetween(1,100,userNumber);
-  const [currentGuess,setCurrentGuess]=useState(initialGuess);
+}
+
+let mixBoundary = 1;
+let maxBoundary = 100;
+
+function GameScreen({ userNumber }) {
+  const initialGuess = generateRandomBetween(
+    mixBoundary,
+    maxBoundary,
+    userNumber
+  );
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+
+  function nextGuessHandler(direction) {
+    if (
+      (direction === "lower" && currentGuess < userNumber) ||
+      (direction === "greater" && currentGuess > userNumber)
+    ) {
+      Alert.alert("Don't lie", "You know that this is wrong...", [
+        { text: "Sorry!", style: "cancel  " },
+      ]);
+      return;
+    }
+
+    if (direction === "lower") {
+      maxBoundary = currentGuess - 1;
+    } else {
+      mixBoundary = currentGuess + 1;
+    }
+    const newRandomNumber = generateRandomBetween(
+      mixBoundary,
+      maxBoundary,
+      currentGuess
+    );
+    setCurrentGuess(newRandomNumber);
+  }
 
   return (
     <View style={styles.screen}>
       <Title> Opponent' s Guess</Title>
       <NumberContainer>{currentGuess}</NumberContainer>
+      <View>
+        <PrimaryButton tikla={nextGuessHandler.bind(this, "lower")}>
+          -
+        </PrimaryButton>
+        <PrimaryButton tikla={nextGuessHandler.bind(this, "greater")}>
+          +
+        </PrimaryButton>
+      </View>
     </View>
   );
 }
