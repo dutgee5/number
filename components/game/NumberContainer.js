@@ -24,7 +24,7 @@ const styles=StyleSheet.create({
     },
     text:{
         color:Colors.accent500,
-        fontWeight:"bold",
+        fontFamily:"open-sans-bold",
         fontSize:36,
     }
 });
